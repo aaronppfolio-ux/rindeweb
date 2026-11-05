@@ -1,5 +1,5 @@
 // Service worker: permite abrir Rinde sin internet (por ejemplo, dentro del supermercado).
-const CACHE = 'rinde-v1';
+const CACHE = 'rinde-v2';
 const SHELL = ['/', '/index.html', '/assets/styles.css', '/assets/datos.js', '/assets/app.js', '/favicon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', e => {

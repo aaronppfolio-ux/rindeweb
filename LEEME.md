@@ -1,7 +1,8 @@
 # Rinde · cómo subirlo a Netlify
 
-Planificador de comidas por presupuesto con precios de La Colonia Nicaragua.
-Los precios se actualizan solos todos los días a las 5:00 a. m. (hora de Nicaragua).
+Planificador de comidas y compras con el catálogo completo de La Colonia Nicaragua (7,961 productos):
+menú semanal, presupuesto del mes, buscador con carrito y "¿Qué cocino?". Todo con IVA.
+Los precios de todo el catálogo se actualizan solos todos los días a las 5:00 a. m. (hora de Nicaragua).
 
 ## Qué hay en esta carpeta
 
@@ -12,15 +13,16 @@ rinde-netlify/
 ├── public/                      Lo que ve el usuario (la página)
 │   ├── index.html
 │   ├── assets/styles.css        Diseño
-│   ├── assets/datos.js          Productos, precios base y recetas
+│   ├── assets/datos.js          Catálogo completo, 297 recetas, ingredientes y canasta del mes
 │   ├── assets/app.js            Funcionamiento de la página
 │   ├── manifest.webmanifest     Permite instalarla en el celular como app
 │   ├── sw.js                    Permite abrirla sin internet
 │   └── favicon.svg, icon-192.png, icon-512.png, apple-touch-icon.png
 └── netlify/
-    ├── functions/precios.mjs             API: /api/precios
-    ├── functions/actualizar-precios.mjs  Tarea diaria que lee La Colonia
-    └── shared/actualizar.mjs             Lógica compartida y lista de productos
+    ├── functions/precios.mjs                     API: /api/precios
+    ├── functions/actualizar-precios.mjs          Tarea diaria que lee las 19 categorías de La Colonia
+    ├── functions/actualizar-ahora-background.mjs Actualización en el momento (la primera vez sola)
+    └── shared/actualizar.mjs                     Lógica compartida
 ```
 
 ## Opción A (recomendada): GitHub + Netlify
@@ -37,7 +39,7 @@ Con esta opción los precios se actualizan solos y cada cambio que subás a GitH
    - Publish directory: `public`
    - Functions directory: `netlify/functions`
 6. **Deploy**. En 1–2 minutos te da un enlace tipo `https://algo.netlify.app`.
-7. Abrí el enlace. La primera vez la página busca los precios en el momento (puede tardar unos segundos). Arriba a la derecha debe decir **Precios al día**.
+7. Abrí el enlace. La primera visita pone en marcha una actualización de fondo de todo el catálogo (tarda 1 o 2 minutos). Mientras tanto la página usa los precios incluidos. Recargá después de unos minutos: arriba a la derecha debe decir **Precios al día**.
 
 Para cambiar el nombre del enlace: **Site configuration → Change site name**.
 
@@ -65,7 +67,8 @@ Netlify Drop (app.netlify.com/drop) solo sube páginas estáticas, sin funciones
 ## Cambios comunes
 
 - **Hora de actualización:** en `netlify/functions/actualizar-precios.mjs`, la línea `schedule: "0 11 * * *"` está en hora UTC (11:00 UTC = 5:00 a. m. en Nicaragua). Para dos veces al día: `"0 11,23 * * *"`.
-- **Agregar un producto:** agregalo en `public/assets/datos.js` (con su número de producto de La Colonia) y agregá ese mismo número a la lista `IDS` en `netlify/shared/actualizar.mjs`.
+- **Forzar una actualización:** visitá `https://TU-SITIO.netlify.app/.netlify/functions/actualizar-ahora-background` (responde vacío y trabaja en segundo plano).
+- **Productos nuevos de La Colonia:** se actualizan los precios de todo lo que ya está en el catálogo. Para que aparezcan productos nuevos en el buscador hay que regenerar `datos.js`.
 - **Después de cambiar archivos de la página:** cambiá `rinde-v1` por `rinde-v2` en `public/sw.js` para que los celulares descarguen la versión nueva.
 
 ## Instalar en el celular
